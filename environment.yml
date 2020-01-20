@@ -9,5 +9,5 @@ dependencies:
   - pytorch
   - numpy
   - matplotlib
-  - pip:
-    - -e .  # for local development mode
+#  - pip:
+#    - -e .  # for local development mode
