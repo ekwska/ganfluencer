@@ -1,0 +1,13 @@
+name: ganfluencer
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.7
+  - pip
+  - tensorflow
+  - pytorch
+  - numpy
+  - matplotlib
+#  - pip:
+#    - -e .  # for local development mode
