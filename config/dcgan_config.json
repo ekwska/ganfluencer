@@ -1,0 +1,14 @@
+{
+  "data_root": "data/",
+  "workers": 2,
+  "batch_size": 128,
+  "img_size": 64,
+  "n_channels": 3,
+  "z_dim": 100,
+  "f_depth_gen": 64,
+  "f_depth_discrim": 64,
+  "n_epochs": 5,
+  "learning_rate": 0.0002,
+  "beta_1": 0.5,
+  "n_gpu": 1
+}
