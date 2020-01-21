@@ -5,9 +5,9 @@ channels:
 dependencies:
   - python=3.7
   - pip
-  - tensorflow
-  - pytorch
-  - numpy
-  - matplotlib
+  - tensorflow>=2.1.0
+  - pytorch>=1.0.2
+  - numpy>=1.18.1
+  - matplotlib>=3.1.2
 #  - pip:
 #    - -e .  # for local development mode

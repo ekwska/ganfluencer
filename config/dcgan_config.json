@@ -8,7 +8,9 @@
   "f_depth_gen": 64,
   "f_depth_discrim": 64,
   "n_epochs": 5,
-  "learning_rate": 0.0002,
+  "learning_rate_gen": 0.0002,
+  "learning_rate_discrim": 0.0002,
   "beta_1": 0.5,
+  "beta_2": 0.5,
   "n_gpu": 1
 }
