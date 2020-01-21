@@ -34,7 +34,7 @@ setup(
     packages=["ganfluencer",],
     package_dir={"ganfluencer": "ganfluencer"},
     include_package_data=True,
-    python_requires="==3.7",
+    python_requires=">=3.7",
     install_requires=requirements,
     license="MIT",
     classifiers=[
