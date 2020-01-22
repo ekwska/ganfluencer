@@ -32,16 +32,16 @@ class Generator(nn.Module):
             nn.ReLU(True)
         )
         self.block_3 = nn.Sequential(
-            nn.ConvTranspose2d(f_depth * 2, f_depth * 4, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(f_depth * 2, f_depth, 4, 2, 1, bias=False),
             nn.BatchNorm2d(f_depth),
             nn.ReLU(True)
         )
         self.block_4 = nn.Sequential(
-            nn.ConvTranspose2d(f_depth * 4, n_channels, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(f_depth, n_channels, 4, 2, 1, bias=False),
             nn.Tanh()
         )
 
-    def forward_pass(self, z):
+    def forward(self, z):
         x = self.block_0(z)
         x = self.block_1(x)
         x = self.block_2(x)

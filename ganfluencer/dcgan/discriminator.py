@@ -41,7 +41,7 @@ class Discriminator(nn.Module):
             nn.Sigmoid()
         )
 
-    def forward_pass(self, z):
+    def forward(self, z):
         x = self.block_0(z)
         x = self.block_1(x)
         x = self.block_2(x)
