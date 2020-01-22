@@ -24,7 +24,7 @@ setup(
     name="ganfluencer",
     version=version,
     description=(
-        "An implementation of DCGAN to generate 'beauty influencer' YouTube thumbnails"
+        "Experimenting with GANs to generate 'beauty influencer' YouTube thumbnails"
     ),
     long_description=readme,
     long_description_content_type="text/markdown",

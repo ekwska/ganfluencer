@@ -1,2 +1,2 @@
 # ganfluencer
-An implementation of DCGAN to generate "beauty influencer" YouTube thumbnails
+Experimenting with GANs to generate 'beauty influencer' YouTube thumbnails
