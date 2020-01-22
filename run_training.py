@@ -9,14 +9,14 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.utils as vutils
 from ganfluencer.dcgan.generator import Generator
-from pprint import pprint
 from ganfluencer.dcgan.discriminator import Discriminator
 from ganfluencer.dcgan.utils import initialise_weights, initialise_loader
 from torch.utils.tensorboard import SummaryWriter
 
 
 def run_training_loop(config):
-    pprint(config, indent=2)
+    # View config
+    print("CONFIG: ", json.dumps(config, indent=2, sort_keys=True))
     # Set up logging
     writer = SummaryWriter(config['log_dir'])
 
@@ -156,5 +156,6 @@ def run_training_loop(config):
 
 if __name__ == "__main__":
     config_fname = 'config/dcgan_config.json'
-    config = json.loads(config_fname)
+    with open(config_fname) as file:
+        config = json.load(file)
     run_training_loop(config)
