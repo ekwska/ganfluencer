@@ -1,4 +1,10 @@
+import random
+import torch
 import torch.nn as nn
+import torch.nn.parallel
+import torch.utils.data
+import torchvision.datasets as dset
+import torchvision.transforms as transforms
 
 
 def initialise_weights(model):
@@ -10,3 +16,17 @@ def initialise_weights(model):
     elif classname.find('BatchNorm') != -1:
         nn.init.normal_(model.weight.data, 1.0, 0.02)
         nn.init.constant_(model.bias.data, 0)
+
+
+def initialise_loader(data_root, img_size, batch_size, workers):
+    dataset = dset.ImageFolder(root=data_root,
+                               transform=transforms.Compose([
+                                   transforms.Resize(img_size),
+                                   transforms.CenterCrop(img_size),
+                                   transforms.ToTensor(),
+                                   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+                               ]))
+    # Create the dataloader
+    data_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
+                                              shuffle=True, num_workers=workers)
+    return data_loader
