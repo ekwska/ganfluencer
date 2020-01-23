@@ -11,8 +11,8 @@ import torchvision.utils as vutils
 import pickle
 from ganfluencer.dcgan.generator import Generator
 from ganfluencer.dcgan.discriminator import Discriminator
-from ganfluencer.pgdcgan.generator import PgGenerator
-from ganfluencer.pgdcgan.discriminator import PgDiscriminator
+from ganfluencer.bigdcgan.generator import BigGenerator
+from ganfluencer.bigdcgan.discriminator import BigDiscriminator
 from ganfluencer.utils import initialise_weights, initialise_loader
 from torch.utils.tensorboard import SummaryWriter
 
@@ -33,14 +33,14 @@ def run_training_loop(config):
     #  Define model to use
     model_name = config['model']
 
-    if model_name not in ['dcgan', 'pgdcgan']:
-        raise ValueError(f"{config['model']} is not a valid model. Use one of 'dcgan' or 'pgdcgan")
+    if model_name not in ['dcgan', 'bigdcgan']:
+        raise ValueError(f"{config['model']} is not a valid model. Use one of 'dcgan' or 'bigdcgan")
 
     # Create the generator
     if model_name == 'dcgan':
         netG = Generator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
     else:
-        netG = PgGenerator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
+        netG = BigGenerator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
 
     # Handle multi-gpu if desired
     if (device.type == 'cuda') and (config['n_gpu'] > 1):
@@ -57,7 +57,7 @@ def run_training_loop(config):
     if model_name == 'dcgan':
         netD = Discriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
     else:
-        netD = PgDiscriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
+        netD = BigDiscriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
 
     # Handle multi-gpu if desired
     if (device.type == 'cuda') and (config['n_gpu'] > 1):
@@ -172,7 +172,7 @@ def run_training_loop(config):
 
 
 if __name__ == "__main__":
-    config_fname = 'config/pgdcgan_config.json'
+    config_fname = 'config/bigdcgan_config.json'
     with open(config_fname) as file:
         config = json.load(file)
     img_list = run_training_loop(config)
