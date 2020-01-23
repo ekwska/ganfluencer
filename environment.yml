@@ -3,11 +3,10 @@ channels:
   - conda-forge
   - pytorch
 dependencies:
-  - python=3.7
+  - python>=3.7
   - pip
-  - tensorflow
-  - pytorch
-  - numpy
-  - matplotlib
-#  - pip:
-#    - -e .  # for local development mode
+  - pytorch>=1.0.2
+  - numpy>=1.18.1
+  - matplotlib>=3.1.2
+  - pip:
+      - tensorflow>=2.1.0

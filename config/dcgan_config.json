@@ -1,0 +1,17 @@
+{
+  "data_root": "data/",
+  "log_dir": "runs/dcgan_exp_1",
+  "workers": 2,
+  "batch_size": 128,
+  "img_size": 64,
+  "n_channels": 3,
+  "z_dim": 100,
+  "f_depth_gen": 64,
+  "f_depth_discrim": 64,
+  "n_epochs": 5,
+  "lr_gen": 0.0002,
+  "lr_discrim": 0.0002,
+  "beta_1": 0.5,
+  "beta_2": 0.5,
+  "n_gpu": 1
+}
