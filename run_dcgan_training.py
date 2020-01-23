@@ -11,8 +11,8 @@ import torchvision.utils as vutils
 import pickle
 from ganfluencer.dcgan.generator import Generator
 from ganfluencer.dcgan.discriminator import Discriminator
-from ganfluencer.pgdcgan.generator import Generator as pgGenerator
-from ganfluencer.pgdcgan.discriminator import Discriminator as pgDiscriminator
+from ganfluencer.pgdcgan.generator import PgGenerator
+from ganfluencer.pgdcgan.discriminator import PgDiscriminator
 from ganfluencer.utils import initialise_weights, initialise_loader
 from torch.utils.tensorboard import SummaryWriter
 
@@ -40,7 +40,7 @@ def run_training_loop(config):
     if model_name == 'dcgan':
         netG = Generator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
     else:
-        netG = pgGenerator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
+        netG = PgGenerator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
 
     # Handle multi-gpu if desired
     if (device.type == 'cuda') and (config['n_gpu'] > 1):
@@ -57,7 +57,7 @@ def run_training_loop(config):
     if model_name == 'dcgan':
         netD = Discriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
     else:
-        netD = pgDiscriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
+        netD = PgDiscriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
 
     # Handle multi-gpu if desired
     if (device.type == 'cuda') and (config['n_gpu'] > 1):

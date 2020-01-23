@@ -1,16 +1,16 @@
 import torch.nn as nn
 
 
-class Discriminator(nn.Module):
+class PgDiscriminator(nn.Module):
     def __init__(self, f_depth, n_channels, n_gpu):
-        """ DCGAN Discriminator model
+        """ Progressively growing DCGAN Discriminator model
 
         :param f_depth: Depth of feature maps
         :param n_channels: Number of image channels (3 for RGB)
         :param n_gpu: Number of GPUs available (0 for CPU).
 
         """
-        super(Discriminator, self).__init__()
+        super(PgDiscriminator, self).__init__()
         self.n_gpu = n_gpu
 
         self.block_0 = nn.Sequential(

@@ -1,10 +1,10 @@
 import torch.nn as nn
 
 
-class Generator(nn.Module):
+class PgGenerator(nn.Module):
 
     def __init__(self, z_dim, f_depth, n_channels, n_gpu):
-        """ DCGAN Generator model
+        """ Progressively growing DCGAN Generator model
 
         :param z_dim: Depth of feature maps
         :param f_depth: Depth of feature maps
@@ -12,7 +12,7 @@ class Generator(nn.Module):
         :param n_gpu: Number of GPUs available (0 for CPU).
 
         """
-        super(Generator, self).__init__()
+        super(PgGenerator, self).__init__()
         self.n_gpu = n_gpu
 
         # Define architecture
