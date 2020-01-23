@@ -8,9 +8,12 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.utils as vutils
+import pickle
 from ganfluencer.dcgan.generator import Generator
 from ganfluencer.dcgan.discriminator import Discriminator
-from ganfluencer.dcgan.utils import initialise_weights, initialise_loader
+from ganfluencer.bigdcgan.generator import BigGenerator
+from ganfluencer.bigdcgan.discriminator import BigDiscriminator
+from ganfluencer.utils import initialise_weights, initialise_loader
 from torch.utils.tensorboard import SummaryWriter
 
 
@@ -27,8 +30,17 @@ def run_training_loop(config):
     # Set up data loader
     data_loader = initialise_loader(config['data_root'], config['img_size'], config['batch_size'], config['workers'])
 
+    #  Define model to use
+    model_name = config['model']
+
+    if model_name not in ['dcgan', 'bigdcgan']:
+        raise ValueError(f"{config['model']} is not a valid model. Use one of 'dcgan' or 'bigdcgan")
+
     # Create the generator
-    netG = Generator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
+    if model_name == 'dcgan':
+        netG = Generator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
+    else:
+        netG = BigGenerator(config['z_dim'], config['f_depth_gen'], config['n_channels'], config['n_gpu']).to(device)
 
     # Handle multi-gpu if desired
     if (device.type == 'cuda') and (config['n_gpu'] > 1):
@@ -42,7 +54,10 @@ def run_training_loop(config):
     print(netG)
 
     # Create the Discriminator
-    netD = Discriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
+    if model_name == 'dcgan':
+        netD = Discriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
+    else:
+        netD = BigDiscriminator(config['f_depth_discrim'], config['n_channels'], config['n_gpu']).to(device)
 
     # Handle multi-gpu if desired
     if (device.type == 'cuda') and (config['n_gpu'] > 1):
@@ -60,7 +75,7 @@ def run_training_loop(config):
 
     # Create batch of latent vectors that we will use to visualize
     #  the progression of the generator
-    fixed_noise = torch.randn(64, config['z_dim'], 1, 1, device=device)
+    fixed_noise = torch.randn(config['img_size'], config['z_dim'], 1, 1, device=device)
 
     # Establish convention for real and fake labels during training
     real_label = 1
@@ -136,7 +151,7 @@ def run_training_loop(config):
             optimizerG.step()
 
             # Output training stats
-            if i % 50 == 0:
+            if i % 10 == 0:
                 print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f'
                       % (epoch, config['n_epochs'], i, len(data_loader),
                          errD.item(), errG.item(), D_x, D_G_z1, D_G_z2))
@@ -146,16 +161,20 @@ def run_training_loop(config):
             D_losses.append(errD.item())
 
             # Check how the generator is doing by saving G's output on fixed_noise
-            if (iters % 500 == 0) or ((epoch == config['n_epochs'] - 1) and (i == len(data_loader) - 1)):
+            if (iters % 50 == 0) or ((epoch == config['n_epochs'] - 1) and (i == len(data_loader) - 1)):
                 with torch.no_grad():
                     fake = netG(fixed_noise).detach().cpu()
                 img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
 
             iters += 1
 
+    return img_list
+
 
 if __name__ == "__main__":
-    config_fname = 'config/dcgan_config.json'
+    config_fname = 'config/bigdcgan_config.json'
     with open(config_fname) as file:
         config = json.load(file)
-    run_training_loop(config)
+    img_list = run_training_loop(config)
+    with open('data/img_list.pkl', 'wb') as f:
+        pickle.dump(img_list, f)
