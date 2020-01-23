@@ -75,7 +75,7 @@ def run_training_loop(config):
 
     # Create batch of latent vectors that we will use to visualize
     #  the progression of the generator
-    fixed_noise = torch.randn(128, config['z_dim'], 1, 1, device=device)
+    fixed_noise = torch.randn(config['img_size'], config['z_dim'], 1, 1, device=device)
 
     # Establish convention for real and fake labels during training
     real_label = 1
