@@ -83,6 +83,7 @@ ipython_config.py
 
 # Pycharm
 .idea
+.DS_Store
 
 # pyenv
 .python-version
