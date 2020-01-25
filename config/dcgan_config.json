@@ -9,7 +9,7 @@
   "z_dim": 100,
   "f_depth_gen": 64,
   "f_depth_discrim": 64,
-  "n_epochs": 5,
+  "n_epochs": 150,
   "lr_gen": 0.0002,
   "lr_discrim": 0.0002,
   "beta_1": 0.5,

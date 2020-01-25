@@ -168,13 +168,13 @@ def run_training_loop(config):
 
             iters += 1
 
-    return img_list
+    return img_list, G_losses, D_losses
 
 
 if __name__ == "__main__":
-    config_fname = 'config/bigdcgan_config.json'
+    config_fname = 'config/dcgan_config.json'
     with open(config_fname) as file:
         config = json.load(file)
-    img_list = run_training_loop(config)
-    with open('data/img_list.pkl', 'wb') as f:
-        pickle.dump(img_list, f)
+    results = run_training_loop(config)
+    with open('runs/results.pkl', 'wb') as f:
+        pickle.dump(results, f)
