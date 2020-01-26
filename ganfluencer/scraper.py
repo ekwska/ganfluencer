@@ -6,7 +6,7 @@ from youtube_api import YoutubeDataApi
 
 
 def download_thumbnails(data_dir):
-    api_key = 'AIzaSyDSgrYB5w8riafikKEbgsp0mH-HLMShTyg'
+    api_key = 'YOUR_API_KEY_HERE'
 
     yt = YoutubeDataApi(api_key)
 
