@@ -10,3 +10,4 @@ dependencies:
   - matplotlib>=3.1.2
   - pip:
       - tensorflow>=2.1.0
+      - youtube-data-api
