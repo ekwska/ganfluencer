@@ -1,6 +1,6 @@
 {
   "data_root": "data/",
-  "log_dir": "runs/dcgan_exp_1",
+  "log_dir": "logs/dcgan_200_epochs_1",
   "model": "dcgan",
   "workers": 2,
   "batch_size": 128,
@@ -9,7 +9,7 @@
   "z_dim": 100,
   "f_depth_gen": 64,
   "f_depth_discrim": 64,
-  "n_epochs": 150,
+  "n_epochs": 200,
   "lr_gen": 0.0002,
   "lr_discrim": 0.0002,
   "beta_1": 0.5,

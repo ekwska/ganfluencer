@@ -1,6 +1,6 @@
 {
   "data_root": "data/",
-  "log_dir": "runs/bigdcgan_exp_1",
+  "log_dir": "logs/bigdcgan_1000_epochs",
   "model": "bigdcgan",
   "workers": 2,
   "batch_size": 64,
@@ -9,7 +9,7 @@
   "z_dim": 100,
   "f_depth_gen": 160,
   "f_depth_discrim": 160,
-  "n_epochs": 5,
+  "n_epochs": 1000,
   "lr_gen": 0.0002,
   "lr_discrim": 0.0002,
   "beta_1": 0.5,
