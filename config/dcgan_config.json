@@ -14,5 +14,6 @@
   "lr_discrim": 0.0002,
   "beta_1": 0.5,
   "beta_2": 0.5,
-  "n_gpu": 1
+  "n_gpu": 1,
+  "log_interval": 100
 }

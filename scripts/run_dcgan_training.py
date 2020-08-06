@@ -8,24 +8,31 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.utils as vutils
+import numpy as np
 import pickle
+import os
 from ganfluencer.dcgan.generator import Generator
 from ganfluencer.dcgan.discriminator import Discriminator
 from ganfluencer.bigdcgan.generator import BigGenerator
 from ganfluencer.bigdcgan.discriminator import BigDiscriminator
 from ganfluencer.utils import initialise_weights, initialise_loader
 from torch.utils.tensorboard import SummaryWriter
+import logging
+
+logging.basicConfig(format='%(asctime)-15s:%(levelname)s:%(message)s', level=logging.DEBUG)
+logger = logging.getLogger()
 
 
 def run_training_loop(config):
     # View config
-    print("CONFIG: ", json.dumps(config, indent=2, sort_keys=True))
+    logger.debug(f"CONFIG: {json.dumps(config, indent=2, sort_keys=True)}")
     # Set up logging
     writer = SummaryWriter(config['log_dir'])
 
     # Set up device parameters
     # Decide which device we want to run on
     device = torch.device("cuda:0" if (torch.cuda.is_available() and config['n_gpu'] > 0) else "cpu")
+    logger.debug(f'Device is {device}')
 
     # Set up data loader
     data_loader = initialise_loader(config['data_root'], config['img_size'], config['batch_size'], config['workers'])
@@ -49,9 +56,7 @@ def run_training_loop(config):
     # Apply the weights_init function to randomly initialize all weights
     #  to mean=0, stdev=0.2.
     netG.apply(initialise_weights)
-
-    # Print the model
-    print(netG)
+    logging.debug(netG)
 
     # Create the Discriminator
     if model_name == 'dcgan':
@@ -66,37 +71,26 @@ def run_training_loop(config):
     # Apply the weights_init function to randomly initialize all weights
     #  to mean=0, stdev=0.2.
     netD.apply(initialise_weights)
+    logging.debug(netD)
 
-    # Print the model
-    print(netD)
-
-    # Initialize BCELoss function
     criterion = nn.BCELoss()
 
-    # Create batch of latent vectors that we will use to visualize
-    #  the progression of the generator
     fixed_noise = torch.randn(config['img_size'], config['z_dim'], 1, 1, device=device)
 
-    # Establish convention for real and fake labels during training
-    real_label = 1
+    real_label = 0.9
     fake_label = 0
 
-    # Setup Adam optimizers for both G and D
     optimizerD = optim.Adam(netD.parameters(), lr=config['lr_discrim'], betas=(config['beta_1'], config['beta_2']))
     optimizerG = optim.Adam(netG.parameters(), lr=config['lr_gen'], betas=(config['beta_1'], config['beta_2']))
 
+    image_dir = os.path.join(config['log_dir'], 'images')
+    os.makedirs(image_dir, exist_ok=True)
+
     # Training Loop
-
-    # Lists to keep track of progress
-    img_list = []
-    G_losses = []
-    D_losses = []
-    iters = 0
-
-    print("Starting Training Loop...")
-    # For each epoch
+    logging.debug("Starting Training Loop...")
     for epoch in range(config['n_epochs']):
-        # For each batch in the data_loader
+        errG_epoch = 0.0
+        errD_epoch = 0.0
         for i, data in enumerate(data_loader, 0):
 
             ############################
@@ -107,6 +101,7 @@ def run_training_loop(config):
             netD.zero_grad()
             # Format batch
             real_cpu = data[0].to(device)
+
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=device)
             # Forward pass real batch through D
@@ -151,30 +146,38 @@ def run_training_loop(config):
             optimizerG.step()
 
             # Output training stats
-            if i % 10 == 0:
-                print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f'
-                      % (epoch, config['n_epochs'], i, len(data_loader),
+            if i % 100 == 0:
+                logging.debug('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f'
+                      % (epoch+1, config['n_epochs'], i, len(data_loader),
                          errD.item(), errG.item(), D_x, D_G_z1, D_G_z2))
 
-            # Save Losses for plotting later
-            G_losses.append(errG.item())
-            D_losses.append(errD.item())
+            errG_epoch += errG.item()
+            errD_epoch += errD.item()
 
-            # Check how the generator is doing by saving G's output on fixed_noise
-            if (iters % 50 == 0) or ((epoch == config['n_epochs'] - 1) and (i == len(data_loader) - 1)):
-                with torch.no_grad():
-                    fake = netG(fixed_noise).detach().cpu()
-                img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
+        errD_epoch /= len(data_loader)
+        errG_epoch /= len(data_loader)
 
-            iters += 1
+        logging.debug("Epoch %d Epoch_Mean_Loss_G %d Epoch_Mean_Loss_D %d", epoch+1, errG_epoch, errD_epoch)
+        writer.add_scalar("Loss_Discriminator", errD_epoch, epoch+1)
+        writer.add_scalar("Loss_Generator", errG_epoch, epoch+1)
 
-    return img_list, G_losses, D_losses
+        # Check how the generator is doing by saving G's output on fixed_noise
+        with torch.no_grad():
+            fake = netG(fixed_noise).detach().cpu()
+
+        for img_n in range(10):
+            vutils.save_image(fake[img_n, :, :, :], os.path.join(image_dir, f'{epoch+1}_{img_n}.png'),
+                              normalize=True)
+        vutils.save_image(vutils.make_grid(fake, padding=2, normalize=True),
+                          os.path.join(image_dir, f'{epoch+1}_grid.png'))
+
+
+    writer.close()
+    return True
 
 
 if __name__ == "__main__":
-    config_fname = 'config/dcgan_config.json'
+    config_fname = 'config/lemon_config.json'
     with open(config_fname) as file:
         config = json.load(file)
-    results = run_training_loop(config)
-    with open('runs/results.pkl', 'wb') as f:
-        pickle.dump(results, f)
+    run_training_loop(config)

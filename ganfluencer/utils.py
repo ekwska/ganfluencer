@@ -21,8 +21,12 @@ def initialise_weights(model):
 def initialise_loader(data_root, img_size, batch_size, workers):
     dataset = dset.ImageFolder(root=data_root,
                                transform=transforms.Compose([
-                                   transforms.Resize(img_size),
-                                   transforms.CenterCrop(img_size),
+                                   # transforms.Resize((1024, 1024)),
+                                   transforms.CenterCrop((950, 950)),
+                                   transforms.Resize((128, 128)),
+                                   transforms.RandomRotation((0, 360)),
+                                   transforms.RandomHorizontalFlip(),
+                                   transforms.RandomVerticalFlip(),
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
                                ]))
