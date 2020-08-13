@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import io
 import sys
+
 from setuptools import setup
 
 version = "0.0.1"
@@ -13,7 +14,7 @@ requirements = [
     "tensorflow >= 2.1.0",
     "pytorch >= 1.0.2",
     "numpy >= 1.18.1",
-    "matplotlib >= 3.1.2"
+    "matplotlib >= 3.1.2",
 ]
 
 if sys.argv[-1] == "readme":
@@ -24,7 +25,8 @@ setup(
     name="ganfluencer",
     version=version,
     description=(
-        "Experimenting with GANs to generate 'beauty influencer' YouTube thumbnails"
+        "Experimenting with GANs to generate 'beauty influencer' YouTube "
+        "thumbnails"
     ),
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -44,7 +46,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Topic :: Research",
     ],
-    keywords=(
-        "GAN, Python, personal projects, DCGAN"
-    ),
+    keywords=("GAN, Python, personal projects, DCGAN"),
 )
