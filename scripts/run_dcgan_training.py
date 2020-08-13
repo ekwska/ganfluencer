@@ -1,5 +1,5 @@
 """
-Training loop for classic DCGAN modified from https://github.com/pytorch/tutorials/blob/master/beginner_source/dcgan_faces_tutorial.py
+Training loop for classic DCGAN
 
 """
 
@@ -8,8 +8,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.utils as vutils
-import numpy as np
-import pickle
 import os
 from ganfluencer.dcgan.generator import Generator
 from ganfluencer.dcgan.discriminator import Discriminator
@@ -177,7 +175,7 @@ def run_training_loop(config):
 
 
 if __name__ == "__main__":
-    config_fname = 'config/lemon_config.json'
+    config_fname = 'config/dcgan_config.json'
     with open(config_fname) as file:
         config = json.load(file)
     run_training_loop(config)
