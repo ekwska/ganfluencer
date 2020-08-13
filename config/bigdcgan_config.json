@@ -1,6 +1,6 @@
 {
   "data_root": "data/",
-  "log_dir": "logs/bigdcgan_1000_epochs",
+  "log_dir": "logs/bigdcgan",
   "model": "bigdcgan",
   "workers": 2,
   "batch_size": 64,

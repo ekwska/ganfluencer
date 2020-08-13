@@ -1,6 +1,6 @@
 {
   "data_root": "data/",
-  "log_dir": "logs/dcgan_200_epochs_1",
+  "log_dir": "logs/dcgan",
   "model": "dcgan",
   "workers": 2,
   "batch_size": 128,

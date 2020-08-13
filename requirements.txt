@@ -6,3 +6,4 @@ youtube-data-api>=0.0.17
 black>=19.10b0
 isort>=5.4.1
 tqdm>=4.48.2
+tensorboard>=2.3.0
