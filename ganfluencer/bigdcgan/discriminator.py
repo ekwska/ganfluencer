@@ -15,7 +15,7 @@ class BigDiscriminator(nn.Module):
 
         self.block_0 = nn.Sequential(
             nn.Conv2d(n_channels, f_depth, 4, 2, 1, bias=False),
-            nn.LeakyReLU(0.2, inplace=True)
+            nn.LeakyReLU(0.2, inplace=True),
         )
 
         self.block_1 = nn.Sequential(
@@ -27,24 +27,23 @@ class BigDiscriminator(nn.Module):
         self.block_2 = nn.Sequential(
             nn.Conv2d(f_depth * 2, f_depth * 4, 4, 2, 1, bias=False),
             nn.BatchNorm2d(f_depth * 4),
-            nn.LeakyReLU(0.2, inplace=True)
+            nn.LeakyReLU(0.2, inplace=True),
         )
 
         self.block_3 = nn.Sequential(
             nn.Conv2d(f_depth * 4, f_depth * 8, 4, 2, 1, bias=False),
             nn.BatchNorm2d(f_depth * 8),
-            nn.LeakyReLU(0.2, inplace=True)
+            nn.LeakyReLU(0.2, inplace=True),
         )
 
         self.block_4 = nn.Sequential(
             nn.Conv2d(f_depth * 8, f_depth * 16, 4, 2, 1, bias=False),
             nn.BatchNorm2d(f_depth * 16),
-            nn.LeakyReLU(0.2, inplace=True)
+            nn.LeakyReLU(0.2, inplace=True),
         )
 
         self.block_5 = nn.Sequential(
-            nn.Conv2d(f_depth * 16, 1, 1, 4, 0, bias=False),
-            nn.Sigmoid()
+            nn.Conv2d(f_depth * 16, 1, 1, 4, 0, bias=False), nn.Sigmoid()
         )
 
     def forward(self, z):

@@ -1,14 +1,4 @@
 name: ganfluencer
-channels:
-  - conda-forge
-  - anaconda
-  - pytorch
 dependencies:
-  - python>=3.7
+  - python==3.7
   - pip
-  - pytorch>=1.0.2
-  - numpy>=1.18.1
-  - matplotlib>=3.1.2
-  - torchvision>=0.5.0
-  - pip:
-      - youtube-data-api

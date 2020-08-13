@@ -1,4 +1,5 @@
 import random
+
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -8,25 +9,45 @@ import torchvision.transforms as transforms
 
 
 def initialise_weights(model):
-    """ Initialises convolutional-* layers and batch normalisation layers with a Gaussian (mu=0.0, sigma=0.02).
+    """ Initialises convolutional-* layers and batch normalisation layers
+    with a Gaussian (mu=0.0, sigma=0.02).
     """
     classname = model.__class__.__name__
-    if classname.find('Conv') != -1:
+    if classname.find("Conv") != -1:
         nn.init.normal_(model.weight.data, 0.0, 0.02)
-    elif classname.find('BatchNorm') != -1:
+    elif classname.find("BatchNorm") != -1:
         nn.init.normal_(model.weight.data, 1.0, 0.02)
         nn.init.constant_(model.bias.data, 0)
 
 
 def initialise_loader(data_root, img_size, batch_size, workers):
-    dataset = dset.ImageFolder(root=data_root,
-                               transform=transforms.Compose([
-                                   transforms.Resize(img_size),
-                                   transforms.CenterCrop(img_size),
-                                   transforms.ToTensor(),
-                                   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                               ]))
+    """ Initialise torch dataloader with standard transforms.
+
+    Args:
+        data_root: (str) Path to the directory containing data. All images
+        should be in this directory (no segregation by folder).
+        img_size: (int) The size of the output image.
+        batch_size: (int) The number of images per batch.
+        workers: (int) The number of workers.
+
+    Returns: torch DataLoader
+
+    """
+    dataset = dset.ImageFolder(
+        root=data_root,
+        transform=transforms.Compose(
+            [
+                transforms.Resize((img_size, img_size)),
+                transforms.RandomRotation((0, 360)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        ),
+    )
     # Create the dataloader
-    data_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
-                                              shuffle=True, num_workers=workers)
+    data_loader = torch.utils.data.DataLoader(
+        dataset, batch_size=batch_size, shuffle=True, num_workers=workers
+    )
     return data_loader
